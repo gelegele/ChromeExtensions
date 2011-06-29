@@ -7,12 +7,6 @@ body {
   padding: 0px;
   background: #ffffff;
 }
-/*
-div:first-child {
-  margin-top: 0px;
-}
-*/
-
 
 div.link {
   cursor: pointer;
@@ -22,34 +16,28 @@ div.link {
   width: 250px;
   height: 16px;
   margin-top: 1px;
-/*  background: #66cdaa;*/
 }
 div.link:hover {
   background: #e6e6fa;
 }
+
 img {
   float: left;
 }
+
 a.link {
   width: 200px;
   text-decoration: none;;
   float: right;
   white-space: nowrap;
   overflow: hidden;
-  /*
   text-overflow: ellipsis;
-  -webkit-text-overflow: ellipsis;
-  */
-/*  background: #66cdaa;*/
 }
 a.x {
   width: 20px;
   height: 100%;
   float: left;
   text-align: center;
-}
-a.x:hover {
-  background: coral
 }
 
 div.clear {
@@ -66,8 +54,6 @@ div.clear {
 div.clear:hover {
   background: #ff6347
 }
-
-.sampleBox{background: #ffc;padding:10px;cursor: pointer}
 
 </style>
 
@@ -138,26 +124,35 @@ function makeList() {
         aTag.target = "_blank";
         console.log(JSON.stringify(item) + "\n");
         aTag.href = item.url;
-//        aTag.setAttribute("onclick", "clearItem(" + item.id + ")"); // リンククリックで削除
+        if (false) { // TODO オプション
+           // リンククリックで自動削除
+            aTag.setAttribute("onclick", "clearItem(" + item.id + ")");
+        }
         aTag.appendChild(document.createTextNode(item.title));
 
+        // div
         var divTag = document.createElement("div");
         divTag.id = item.id; // clearItem()にて使用する
         divTag.className = "link";
-        divTag.title = item.url; // ポップアップでURL表示
-        //divTag.appendChild(xTag);
+        divTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
+        if (false) { // TODO オプション
+            divTag.appendChild(xTag);
+        }
         divTag.appendChild(imgTag);
         divTag.appendChild(aTag);
         document.getElementById("list").appendChild(divTag);
     }
 
-    // divクリックハンドラ
-    // この関数内に書くことで上記で動的生成されたdivタグにイベント設定できる
+    // この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
     $(function(){
+        // divクリックハンドラ
         $("div.link").click(function(){
             var url = $(this).find("a").attr("href");
             window.open(url, "_blank");
             return false;
+       });
+        $("a.x").hover(function(){
+            $(this).parent
        });
     });
 }
