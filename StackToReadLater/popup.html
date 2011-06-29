@@ -8,6 +8,11 @@ body {
   background: #ffffff;
 }
 
+div.row {
+  width: 250px;
+  height: 16px;
+}
+
 div.link {
   cursor: pointer;
   padding: 1px 3px;
@@ -34,6 +39,7 @@ a.link {
   text-overflow: ellipsis;
 }
 a.x {
+  cursor: pointer;
   width: 20px;
   height: 100%;
   float: left;
@@ -44,11 +50,8 @@ div.clear {
   width: 50px;
   clear: left;
   cursor: pointer;
-/*  padding: 1px 3px;*/
   font-family: sans-serif;
   font-size: 0.8em;
-/*  margin-top: 1px;*/
-  /*margin-left: 195px;*/
   text-align: center;
 }
 div.clear:hover {
@@ -111,7 +114,7 @@ function makeList() {
         // 削除ボタン
         var xTag = document.createElement("a");
         xTag.className = "x";
-        xTag.appendChild(document.createTextNode("X"));
+        xTag.appendChild(document.createTextNode("x"));
         xTag.setAttribute("onclick", "clearItem(" + item.id + ")");
 
         // Favicon
@@ -130,30 +133,49 @@ function makeList() {
         }
         aTag.appendChild(document.createTextNode(item.title));
 
-        // div
-        var divTag = document.createElement("div");
-        divTag.id = item.id; // clearItem()にて使用する
-        divTag.className = "link";
-        divTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
-        if (false) { // TODO オプション
-            divTag.appendChild(xTag);
+        // リンクdiv
+        var linkDivTag = document.createElement("div");
+//        linkDivTag.id = item.id; // clearItem()にて使用する
+        linkDivTag.className = "link";
+        linkDivTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
+        linkDivTag.appendChild(imgTag);
+        linkDivTag.appendChild(aTag);
+
+        // 行div
+        var rowDivTag = document.createElement("div");
+        rowDivTag.id = item.id; // clearItem()にて使用する
+        rowDivTag.className = "row";
+        if (true) { // TODO オプション
+            rowDivTag.appendChild(xTag);
         }
-        divTag.appendChild(imgTag);
-        divTag.appendChild(aTag);
-        document.getElementById("list").appendChild(divTag);
+        rowDivTag.appendChild(linkDivTag);
+
+        document.getElementById("list").appendChild(rowDivTag);
     }
 
     // この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
     $(function(){
+
         // divクリックハンドラ
         $("div.link").click(function(){
             var url = $(this).find("a").attr("href");
             window.open(url, "_blank");
             return false;
        });
-        $("a.x").hover(function(){
-            $(this).parent
-       });
+
+       // 削除ボタンのホバーで行の色を切り替える
+       $("a.x").hover(
+           function(){
+               var rowDivTag = $(this).parent().get(0);
+               rowDivTag.style.background = "#ff3333";
+               console.log("aaaa");
+           },
+           function(){
+               var rowDivTag = $(this).parent().get(0);
+               rowDivTag.style.background = "#ffffff";
+               console.log("bbbb");
+           }
+       );
     });
 }
 
