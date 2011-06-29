@@ -75,9 +75,10 @@ div.clear:hover {
 
 <script>
 
-// divƒNƒŠƒbƒNƒnƒ“ƒhƒ‰
+// divã‚¯ãƒªãƒƒã‚¯ãƒãƒ³ãƒ‰ãƒ©
+// onloadå¥‘æ©Ÿã®makeListã‚ˆã‚Šã‚‚å…ˆã«èµ°ã£ã¦ã—ã¾ã†ã®ã§makeListå†…ã§ç”Ÿæˆã•ã‚ŒãŸdivã«å¯¾ã—ã¦ã¯åŠ¹ã‹ãªã„
 $(function(){
-    console.log("AAAAAAAAAAAAAAaa");
+    console.log("divlinkã¯ã‚“ã©ã‚‰");
     $("div.link").click(function(){
         console.log("CCCCCCC");
         //window.location=$(this).find("a").attr("href");
@@ -85,21 +86,20 @@ $(function(){
         window.open(url, "_blank");
         return false;
    });
-    console.log("BBBBBBBBBB");
 });
 
 
-//ƒŠƒXƒgƒNƒŠƒA
+//ãƒªã‚¹ãƒˆã‚¯ãƒªã‚¢
 function clearList() {
-    localStorage.removeItem("list");  // ƒ[ƒJƒ‹ƒXƒgƒŒ[ƒWƒNƒŠƒA
-    chrome.browserAction.setBadgeText({text:""}); // ƒoƒbƒWƒNƒŠƒA
-    window.close(); // popup•Â‚¶
+    localStorage.removeItem("list");  // ãƒ­ãƒ¼ã‚«ãƒ«ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‚¯ãƒªã‚¢
+    chrome.browserAction.setBadgeText({text:""}); // ãƒãƒƒã‚¸ã‚¯ãƒªã‚¢
+    window.close(); // popupé–‰ã˜
 }
 
-//ƒAƒCƒeƒ€ƒNƒŠƒA
+//ã‚¢ã‚¤ãƒ†ãƒ ã‚¯ãƒªã‚¢
 function clearItem(id) {
 
-    // ƒ[ƒJƒ‹ƒXƒgƒŒ[ƒW‚©‚çíœ
+    // ãƒ­ãƒ¼ã‚«ãƒ«ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‹ã‚‰å‰Šé™¤
     var list = JSON.parse(localStorage.getItem("list"));
     for (var i = 0; i < list.length; i++) {
         if (id == list[i].id) {
@@ -110,7 +110,7 @@ function clearItem(id) {
     }
     localStorage.setItem("list", JSON.stringify(list));
 
-    // ƒoƒbƒWXV
+    // ãƒãƒƒã‚¸æ›´æ–°
     var text = "";
     console.log("list.length = " + list.length);
     if (0 < list.length) {
@@ -118,23 +118,24 @@ function clearItem(id) {
     }
     chrome.browserAction.setBadgeText({text:text});
 
-    // POPUP“à‚©‚çíœ
+    // POPUPå†…ã‹ã‚‰å‰Šé™¤
     var deleteItem = document.getElementById(id);
     document.getElementById("list").removeChild(deleteItem);
 }
 
-// ƒŠƒ“ƒNƒŠƒXƒg‚ğì¬‚·‚é
+// ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 function makeList() {
+    console.log("makeList()");
     var list = JSON.parse(localStorage.getItem("list"));
     if (typeof list == "undefined" || list.length == 0) {
-        return; // ƒŠƒXƒg‚ª‹ó‚È‚ç‰½‚à•\¦‚µ‚È‚¢
+        return; // ãƒªã‚¹ãƒˆãŒç©ºãªã‚‰ä½•ã‚‚è¡¨ç¤ºã—ãªã„
     }
 
-    // ƒŠƒXƒg
+    // ãƒªã‚¹ãƒˆ
     for (var i = 0; i < list.length; i++) {
         var item = list[i];
 
-        // íœƒ{ƒ^ƒ“
+        // å‰Šé™¤ãƒœã‚¿ãƒ³
         var xTag = document.createElement("a");
         xTag.className = "x";
         xTag.appendChild(document.createTextNode("X"));
@@ -144,18 +145,18 @@ function makeList() {
         var imgTag = document.createElement("img");
         imgTag.src = "chrome://favicon/" + item.url;
 
-        // ƒŠƒ“ƒN
+        // ãƒªãƒ³ã‚¯
         var aTag = document.createElement("a");
         aTag.className = "link";
         aTag.target = "_blank";
         console.log(JSON.stringify(item) + "\n");
         aTag.href = item.url;
         aTag.title = item.url;
-//        aTag.setAttribute("onclick", "clearItem(" + item.id + ")"); // ƒŠƒ“ƒNƒNƒŠƒbƒN‚Åíœ
+//        aTag.setAttribute("onclick", "clearItem(" + item.id + ")"); // ãƒªãƒ³ã‚¯ã‚¯ãƒªãƒƒã‚¯ã§å‰Šé™¤
         aTag.appendChild(document.createTextNode(item.title));
 
         var divTag = document.createElement("div");
-        divTag.id = item.id; // clearItem()‚É‚Äg—p‚·‚é
+        divTag.id = item.id; // clearItem()ã«ã¦ä½¿ç”¨ã™ã‚‹
         divTag.className = "link";
         //divTag.appendChild(xTag);
         divTag.appendChild(imgTag);
@@ -168,22 +169,21 @@ function makeList() {
 </head>
 
 <body onload="makeList()">
-    <!-- ƒŠƒXƒg  -->
+    <!-- ãƒªã‚¹ãƒˆ  -->
     <div id="list">
-
-<div id="30" class="link">
-  <img src="chrome://favicon/http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">
-  <a class="link" target="_blank" href="http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank" title="http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">window.location blank - Google ŒŸõ</a>
-</div>
 
     <div id="dasda" class="link">
       <img src="chrome://favicon/http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">
-      <a class="link" target="_blank" href="http://webcreatorbox.com" title="asdfa">WebƒNƒŠƒGƒCƒ^[ƒ{ƒbƒNƒX‚Ö</a>
+      <a class="link" target="_blank" href="http://webcreatorbox.com" title="asdfa">Webã‚¯ãƒªã‚¨ã‚¤ã‚¿ãƒ¼ãƒœãƒƒã‚¯ã‚¹ã¸</a>
     </div>
 
+<div id="10" class="link">
+  <img src="chrome://favicon/http://sourceforge.jp/magazine/09/02/02/0655246">
+  <a class="link" target="_blank" href="http://sourceforge.jp/magazine/09/02/02/0655246" title="http://sourceforge.jp/magazine/09/02/02/0655246">åˆ†æ•£ãƒãƒ¼ã‚¸ãƒ§ãƒ³ç®¡ç†ã‚·ã‚¹ãƒ†ãƒ Gitã®ä½¿ã„æ–¹å…¥é–€ - SourceForge.JP Magazine : ã‚ªãƒ¼ãƒ—ãƒ³ã‚½ãƒ¼ã‚¹ã®è©±é¡Œæº€è¼‰</a>
+</div>
 
     </div>
-    <!-- ƒNƒŠƒAƒ{ƒ^ƒ“  -->
+    <!-- ã‚¯ãƒªã‚¢ãƒœã‚¿ãƒ³  -->
     <div class="clear" onclick="clearList()">CLEAR</div>
 
 
