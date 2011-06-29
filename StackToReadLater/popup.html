@@ -1,0 +1,190 @@
+<head>
+<style>
+body {
+  width:250px;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  background: #ffffff;
+}
+/*
+div:first-child {
+  margin-top: 0px;
+}
+*/
+
+
+div.link {
+  cursor: pointer;
+  padding: 1px 3px;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  width: 250px;
+  height: 16px;
+  margin-top: 1px;
+/*  background: #66cdaa;*/
+}
+div.link:hover {
+  background: #e6e6fa;
+}
+img {
+  float: left;
+}
+a.link {
+  width: 200px;
+  text-decoration: none;;
+  float: right;
+  white-space: nowrap;
+  overflow: hidden;
+  /*
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  */
+/*  background: #66cdaa;*/
+}
+a.x {
+  width: 20px;
+  height: 100%;
+  float: left;
+  text-align: center;
+}
+a.x:hover {
+  background: coral
+}
+
+div.clear {
+  width: 50px;
+  clear: left;
+  cursor: pointer;
+/*  padding: 1px 3px;*/
+  font-family: sans-serif;
+  font-size: 0.8em;
+/*  margin-top: 1px;*/
+  /*margin-left: 195px;*/
+  text-align: center;
+}
+div.clear:hover {
+  background: #ff6347
+}
+
+.sampleBox{background: #ffc;padding:10px;cursor: pointer}
+
+</style>
+
+<script type="text/javascript" src="jquery.js"></script>
+
+<script>
+
+// divクリックハンドラ
+$(function(){
+    console.log("AAAAAAAAAAAAAAaa");
+    $("div.link").click(function(){
+        console.log("CCCCCCC");
+        //window.location=$(this).find("a").attr("href");
+        var url = $(this).find("a").attr("href");
+        window.open(url, "_blank");
+        return false;
+   });
+    console.log("BBBBBBBBBB");
+});
+
+
+//リストクリア
+function clearList() {
+    localStorage.removeItem("list");  // ローカルストレージクリア
+    chrome.browserAction.setBadgeText({text:""}); // バッジクリア
+    window.close(); // popup閉じ
+}
+
+//アイテムクリア
+function clearItem(id) {
+
+    // ローカルストレージから削除
+    var list = JSON.parse(localStorage.getItem("list"));
+    for (var i = 0; i < list.length; i++) {
+        if (id == list[i].id) {
+            list.splice(i, 1);
+            console.log("delete item is ...\n" + list[i] +  "]");
+            break;
+        }
+    }
+    localStorage.setItem("list", JSON.stringify(list));
+
+    // バッジ更新
+    var text = "";
+    console.log("list.length = " + list.length);
+    if (0 < list.length) {
+      text = String(list.length);
+    }
+    chrome.browserAction.setBadgeText({text:text});
+
+    // POPUP内から削除
+    var deleteItem = document.getElementById(id);
+    document.getElementById("list").removeChild(deleteItem);
+}
+
+// リンクリストを作成する
+function makeList() {
+    var list = JSON.parse(localStorage.getItem("list"));
+    if (typeof list == "undefined" || list.length == 0) {
+        return; // リストが空なら何も表示しない
+    }
+
+    // リスト
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+
+        // 削除ボタン
+        var xTag = document.createElement("a");
+        xTag.className = "x";
+        xTag.appendChild(document.createTextNode("X"));
+        xTag.setAttribute("onclick", "clearItem(" + item.id + ")");
+
+        // Favicon
+        var imgTag = document.createElement("img");
+        imgTag.src = "chrome://favicon/" + item.url;
+
+        // リンク
+        var aTag = document.createElement("a");
+        aTag.className = "link";
+        aTag.target = "_blank";
+        console.log(JSON.stringify(item) + "\n");
+        aTag.href = item.url;
+        aTag.title = item.url;
+//        aTag.setAttribute("onclick", "clearItem(" + item.id + ")"); // リンククリックで削除
+        aTag.appendChild(document.createTextNode(item.title));
+
+        var divTag = document.createElement("div");
+        divTag.id = item.id; // clearItem()にて使用する
+        divTag.className = "link";
+        //divTag.appendChild(xTag);
+        divTag.appendChild(imgTag);
+        divTag.appendChild(aTag);
+        document.getElementById("list").appendChild(divTag);
+    }
+}
+
+</script>
+</head>
+
+<body onload="makeList()">
+    <!-- リスト  -->
+    <div id="list">
+
+<div id="30" class="link">
+  <img src="chrome://favicon/http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">
+  <a class="link" target="_blank" href="http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank" title="http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">window.location blank - Google 検索</a>
+</div>
+
+    <div id="dasda" class="link">
+      <img src="chrome://favicon/http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">
+      <a class="link" target="_blank" href="http://webcreatorbox.com" title="asdfa">Webクリエイターボックスへ</a>
+    </div>
+
+
+    </div>
+    <!-- クリアボタン  -->
+    <div class="clear" onclick="clearList()">CLEAR</div>
+
+
+</body>
