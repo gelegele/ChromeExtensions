@@ -75,20 +75,6 @@ div.clear:hover {
 
 <script>
 
-// divクリックハンドラ
-// onload契機のmakeListよりも先に走ってしまうのでmakeList内で生成されたdivに対しては効かない
-$(function(){
-    console.log("divlinkはんどら");
-    $("div.link").click(function(){
-        console.log("CCCCCCC");
-        //window.location=$(this).find("a").attr("href");
-        var url = $(this).find("a").attr("href");
-        window.open(url, "_blank");
-        return false;
-   });
-});
-
-
 //リストクリア
 function clearList() {
     localStorage.removeItem("list");  // ローカルストレージクリア
@@ -123,6 +109,7 @@ function clearItem(id) {
     document.getElementById("list").removeChild(deleteItem);
 }
 
+
 // リンクリストを作成する
 function makeList() {
     console.log("makeList()");
@@ -151,18 +138,28 @@ function makeList() {
         aTag.target = "_blank";
         console.log(JSON.stringify(item) + "\n");
         aTag.href = item.url;
-        aTag.title = item.url;
 //        aTag.setAttribute("onclick", "clearItem(" + item.id + ")"); // リンククリックで削除
         aTag.appendChild(document.createTextNode(item.title));
 
         var divTag = document.createElement("div");
         divTag.id = item.id; // clearItem()にて使用する
         divTag.className = "link";
+        divTag.title = item.url; // ポップアップでURL表示
         //divTag.appendChild(xTag);
         divTag.appendChild(imgTag);
         divTag.appendChild(aTag);
         document.getElementById("list").appendChild(divTag);
     }
+
+    // divクリックハンドラ
+    // この関数内に書くことで上記で動的生成されたdivタグにイベント設定できる
+    $(function(){
+        $("div.link").click(function(){
+            var url = $(this).find("a").attr("href");
+            window.open(url, "_blank");
+            return false;
+       });
+    });
 }
 
 </script>
@@ -171,20 +168,7 @@ function makeList() {
 <body onload="makeList()">
     <!-- リスト  -->
     <div id="list">
-
-    <div id="dasda" class="link">
-      <img src="chrome://favicon/http://www.google.co.jp/search?sourceid=chrome&amp;ie=UTF-8&amp;q=window.location+blank">
-      <a class="link" target="_blank" href="http://webcreatorbox.com" title="asdfa">Webクリエイターボックスへ</a>
-    </div>
-
-<div id="10" class="link">
-  <img src="chrome://favicon/http://sourceforge.jp/magazine/09/02/02/0655246">
-  <a class="link" target="_blank" href="http://sourceforge.jp/magazine/09/02/02/0655246" title="http://sourceforge.jp/magazine/09/02/02/0655246">分散バージョン管理システムGitの使い方入門 - SourceForge.JP Magazine : オープンソースの話題満載</a>
-</div>
-
     </div>
     <!-- クリアボタン  -->
     <div class="clear" onclick="clearList()">CLEAR</div>
-
-
 </body>
