@@ -1,7 +1,8 @@
 <head>
 <style>
 body {
-  width:250px;
+  width: 250px;
+/*  height: 16px;*/
   overflow: hidden;
   margin: 0px;
   padding: 0px;
@@ -106,9 +107,7 @@ function makeList() {
     var list = JSON.parse(localStorage.getItem("list"));
     if (/*typeof list == "undefined" || */list == null || list.length == 0) {
         // リストが空なら何も表示しない
-        var body = document.getElementsByTagName("body")[0];
-        body.removeChild(document.getElementById("buttonClear"));
-        document.write('No item.');
+        document.write("No item");
         return;
     }
 
@@ -132,7 +131,7 @@ function makeList() {
         aTag.target = "_blank";
         console.log(JSON.stringify(item) + "\n");
         aTag.href = item.url;
-        if (false) { // TODO オプション
+        if (localStorage["autoRemove"] == "true") {
            // リンククリックで自動削除
             aTag.setAttribute("onclick", "clearItem(" + item.id + ")");
         }
@@ -188,5 +187,7 @@ function makeList() {
     <!-- リスト  -->
     <div id="list"></div>
     <!-- クリアボタン  -->
+    <!--
     <div id="buttonClear" class="clear" onclick="clearList()">CLEAR</div>
+    -->
 </body>
