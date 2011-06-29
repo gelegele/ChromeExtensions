@@ -13,6 +13,14 @@ div.row {
   height: 16px;
 }
 
+a.x {
+  cursor: pointer;
+  width: 20px;
+  height: 100%;
+  float: left;
+  text-align: center;
+}
+
 div.link {
   cursor: pointer;
   padding: 1px 3px;
@@ -31,19 +39,12 @@ img {
 }
 
 a.link {
-  width: 200px;
+  width: 213px;
   text-decoration: none;;
   float: right;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-a.x {
-  cursor: pointer;
-  width: 20px;
-  height: 100%;
-  float: left;
-  text-align: center;
 }
 
 div.clear {
@@ -103,8 +104,12 @@ function clearItem(id) {
 function makeList() {
     console.log("makeList()");
     var list = JSON.parse(localStorage.getItem("list"));
-    if (typeof list == "undefined" || list.length == 0) {
-        return; // リストが空なら何も表示しない
+    if (/*typeof list == "undefined" || */list == null || list.length == 0) {
+        // リストが空なら何も表示しない
+        var body = document.getElementsByTagName("body")[0];
+        body.removeChild(document.getElementById("buttonClear"));
+        document.write('No item.');
+        return;
     }
 
     // リスト
@@ -135,7 +140,6 @@ function makeList() {
 
         // リンクdiv
         var linkDivTag = document.createElement("div");
-//        linkDivTag.id = item.id; // clearItem()にて使用する
         linkDivTag.className = "link";
         linkDivTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
         linkDivTag.appendChild(imgTag);
@@ -161,21 +165,19 @@ function makeList() {
             var url = $(this).find("a").attr("href");
             window.open(url, "_blank");
             return false;
-       });
+        });
 
-       // 削除ボタンのホバーで行の色を切り替える
-       $("a.x").hover(
-           function(){
-               var rowDivTag = $(this).parent().get(0);
-               rowDivTag.style.background = "#ff3333";
-               console.log("aaaa");
-           },
-           function(){
-               var rowDivTag = $(this).parent().get(0);
-               rowDivTag.style.background = "#ffffff";
-               console.log("bbbb");
-           }
-       );
+        // 削除ボタンのホバーで行の色を切り替える
+        $("a.x").hover(
+            function(){
+                var rowDivTag = $(this).parent().get(0);
+                rowDivTag.style.background = "#ff3333";
+            },
+            function(){
+                var rowDivTag = $(this).parent().get(0);
+                rowDivTag.style.background = "#ffffff";
+            }
+        );
     });
 }
 
@@ -184,8 +186,7 @@ function makeList() {
 
 <body onload="makeList()">
     <!-- リスト  -->
-    <div id="list">
-    </div>
+    <div id="list"></div>
     <!-- クリアボタン  -->
-    <div class="clear" onclick="clearList()">CLEAR</div>
+    <div id="buttonClear" class="clear" onclick="clearList()">CLEAR</div>
 </body>

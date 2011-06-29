@@ -1,8 +1,8 @@
 
-// ƒoƒbƒWƒJƒEƒ“ƒ^[XV
+// ãƒãƒƒã‚¸ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ›´æ–°
 function updateBadge() {
   var text = "";
-  if (typeof localStorage["list"] != "undefined") { // getItem‚Å‚Í‚¤‚Ü‚­‚¢‚©‚È‚¢
+  if (typeof localStorage["list"] != "undefined") { // getItemã§ã¯ã†ã¾ãã„ã‹ãªã„
       var list = JSON.parse(localStorage.getItem("list"));
       if (0 < list.length) {
         text = String(list.length);
@@ -11,27 +11,27 @@ function updateBadge() {
   chrome.browserAction.setBadgeText({text:text});
 }
 
-// ƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[ƒNƒŠƒbƒN‚É‚æ‚éƒŠƒXƒg’Ç‰Á
+// ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¯ãƒªãƒƒã‚¯ã«ã‚ˆã‚‹ãƒªã‚¹ãƒˆè¿½åŠ 
 function onClick(onClickData, tabData) {
   console.log("\n\nitem " + onClickData.menuItemId + " was clicked");
   console.log("info: " + JSON.stringify(onClickData));
   console.log("tabInfo: " + JSON.stringify(tabData));
 
   var list;
-  if (typeof localStorage["list"] == "undefined") { // getItem‚Å‚Í‚¤‚Ü‚­‚¢‚©‚È‚¢
+  if (typeof localStorage["list"] == "undefined") { // getItemã§ã¯ã†ã¾ãã„ã‹ãªã„
       console.log("new Array()");
 	  list = new Array();
   } else {
 	  list = JSON.parse(localStorage.getItem("list"));
   }
-  // URLd•¡ƒ`ƒFƒbƒN
+  // URLé‡è¤‡ãƒã‚§ãƒƒã‚¯
   for (var i = 0; i < list.length ; i++) {
       if (list[i].url == tabData.url) {
           console.log("Existed link : " + tabData.url);
-          return; // ‚·‚Å‚É“¯ˆêURL“o˜^Ï‚İ‚È‚Ì‚Å–³‹‚µ‚ÄI—¹B
+          return; // ã™ã§ã«åŒä¸€URLç™»éŒ²æ¸ˆã¿ãªã®ã§ç„¡è¦–ã—ã¦çµ‚äº†ã€‚
       }
   }
-  // “o˜^
+  // ç™»éŒ²
   list.push(tabData);
   console.log(list);
   localStorage.setItem("list", JSON.stringify(list));
