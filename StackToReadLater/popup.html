@@ -1,8 +1,6 @@
 <head>
 <style>
 body {
-  width: 250px;
-/*  height: 16px;*/
   overflow: hidden;
   margin: 0px;
   padding: 0px;
@@ -16,14 +14,14 @@ div.row {
 
 a.x {
   cursor: pointer;
-  width: 16px;
+  width: 18px;
   float: left;
-  text-align: left;
+  text-align: center;
 }
 
 div.link {
   cursor: pointer;
-  padding: 1px 1px 1px 3px;
+  padding: 1px 1px 1px 1px;
   font-family: sans-serif;
   font-size: 0.8em;
   height: 16px;
@@ -126,7 +124,6 @@ function makeList() {
         // リンク
         var aTag = document.createElement("a");
         aTag.className = "link";
-        aTag.target = "_blank";
         console.log(JSON.stringify(item) + "\n");
         aTag.href = item.url;
         if (localStorage["autoRemove"] == "true") {
@@ -135,7 +132,7 @@ function makeList() {
         }
         aTag.appendChild(document.createTextNode(item.title));
 
-        // リンクdiv
+        // Favicon+リンク div
         var linkDivTag = document.createElement("div");
         linkDivTag.className = "link";
         linkDivTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
@@ -156,14 +153,12 @@ function makeList() {
 
     // この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
     $(function(){
-
         // divクリックハンドラ
         $("div.link").click(function(){
             var url = $(this).find("a").attr("href");
             window.open(url, "_blank");
             return false;
         });
-
         // 削除ボタンのホバーで行の色を切り替える
         $("a.x").hover(
             function(){
