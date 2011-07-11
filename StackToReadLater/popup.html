@@ -2,46 +2,53 @@
 <style>
 body {
   overflow: hidden;
-  margin: 0px;
+  margin: 5px 3px 0px 3px;
   padding: 0px;
   background: #ffffff;
 }
 
-div.row {
-  width: 250px;
+a.deleteImg {
+  cursor: pointer;
+  width: 20px;
   height: 20px;
 }
-
-a.x {
+a.deleteButton {
   cursor: pointer;
-  width: 18px;
   float: left;
-  text-align: center;
-}
-
-div.link {
-  cursor: pointer;
-  padding: 1px 1px 1px 1px;
-  font-family: sans-serif;
-  font-size: 0.8em;
-  height: 16px;
-  margin-top: 1px;
-}
-div.link:hover {
-  background: #e6e6fa;
-}
-
-img {
-  float: left;
+  margin: 0px 3px 0px 0px;
 }
 
 a.link {
-  width: 213px;
+  width: 209px;
+  padding: 1px 0px 0px 2px;
   text-decoration: none;;
   float: right;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+div.link {
+  cursor: pointer;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  padding: 1px 0px 0px 0px;
+}
+div.link:hover {
+  background: #e6e6fa;
+}
+
+#sortable-list {
+  list-style-type: none;
+  margin: 0;    
+  padding: 0;
+}
+#sortable-list li {
+  font-size: 15px;
+  font-weight: bold;
+  cursor: move;
+  width: 250px;
+  height: 20px;
 }
 
 div.clear {
@@ -56,26 +63,11 @@ div.clear:hover {
   background: #ff6347
 }
 
-#sortable-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 70%;
-}
-#sortable-list li {
-    margin: 0 3px 3px 3px;
-    padding: 0.3em;
-    padding-left: 1em;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: move;
-}
-
 </style>
 
+<!-- divクリックとD&D並べ替えのためjqueryを使用 -->
 <script type="text/javascript" src="lib/jquery.js"></script>
 <script type="text/javascript" src="lib/jquery-ui.custom.min.js"></script>
-
 <script>
 
 //リストクリア
@@ -113,12 +105,10 @@ function clearItem(id) {
     document.getElementById("sortable-list").removeChild(deleteItem);
 }
 
-
 // リンクリストを作成する
 function makeList() {
-    console.log("makeList()");
     var list = JSON.parse(localStorage.getItem("list"));
-    if (/*typeof list == "undefined" || */list == null || list.length == 0) {
+    if (list == null || list.length == 0) {
         // リストが空なら何も表示しない
         document.write("No item");
         return;
@@ -129,14 +119,18 @@ function makeList() {
         var item = list[i];
 
         // 削除ボタン
+        var deleteImgTag = document.createElement("img");
+        deleteImgTag.src = "delete.png";
+        deleteImgTag.className = "deleteImg"
         var xTag = document.createElement("a");
-        xTag.className = "x";
-        xTag.appendChild(document.createTextNode("x"));
+        xTag.className = "deleteButton";
+        xTag.appendChild(deleteImgTag);
+        //xTag.appendChild(document.createTextNode("x"));
         xTag.setAttribute("onclick", "clearItem(" + item.id + ")");
 
         // Favicon
-        var imgTag = document.createElement("img");
-        imgTag.src = "chrome://favicon/" + item.url;
+        var faviconImgTag = document.createElement("img");
+        faviconImgTag.src = "chrome://favicon/" + item.url;
 
         // リンク
         var aTag = document.createElement("a");
@@ -153,12 +147,11 @@ function makeList() {
         var linkDivTag = document.createElement("div");
         linkDivTag.className = "link";
         linkDivTag.title = item.title + "\n" + item.url; // ポップアップでタイトルとURをL表示
-        linkDivTag.appendChild(imgTag);
+        linkDivTag.appendChild(faviconImgTag);
         linkDivTag.appendChild(aTag);
 
         // 削除ボタン ＋ (Favicon ＋ リンク div)
         var rowDivTag = document.createElement("div");
-        rowDivTag.className = "row";
         if (true) { // TODO オプション
             rowDivTag.appendChild(xTag);
         }
@@ -172,19 +165,20 @@ function makeList() {
         document.getElementById("sortable-list").appendChild(liTag);
     }
 
-    // この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
+    // ｊQuery：この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
     $(function(){
+    	// マウス押下座標
     	var mousedownX;
     	var mousedownY;
 
-        // divマウスダウンハンドラ。マウス押下時の座標を記録しておく。
+        // divマウスダウンハンドラ。座標を記録しておく。
     	$("div.link").mousedown(function(e){
         	mousedownX = e.clientX;
         	mousedownY = e.clientY;
             return true;
         });
 
-        // divクリックハンドラ。マウス押下時と同じ座標のみクリックとみなしリンクへ飛ばす。
+        // divクリックハンドラ。マウス押下時と同じ座標のみをクリックとみなしリンクへ飛ばす。
         $("div.link").click(function(e){
             if (mousedownX == e.clientX && mousedownY == e.clientY) {
                 var url = $(this).find("a").attr("href");
@@ -200,7 +194,7 @@ function makeList() {
         $('#sortable-list').disableSelection();
 
         // 削除ボタンのホバーで行の色を切り替える
-        $("a.x").hover(
+        $("a.deleteButton").hover(
             function(){
                 var liTag = $(this).parent().get(0);
                 liTag.style.background = "#ff3333";
