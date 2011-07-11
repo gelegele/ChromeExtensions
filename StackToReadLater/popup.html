@@ -56,9 +56,25 @@ div.clear:hover {
   background: #ff6347
 }
 
+#sortable-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 70%;
+}
+#sortable-list li {
+    margin: 0 3px 3px 3px;
+    padding: 0.3em;
+    padding-left: 1em;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: move;
+}
+
 </style>
 
-<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="lib/jquery.js"></script>
+<script type="text/javascript" src="lib/jquery-ui.custom.min.js"></script>
 
 <script>
 
@@ -93,7 +109,8 @@ function clearItem(id) {
 
     // POPUP内から削除
     var deleteItem = document.getElementById(id);
-    document.getElementById("list").removeChild(deleteItem);
+    console.log(deleteItem);
+    document.getElementById("sortable-list").removeChild(deleteItem);
 }
 
 
@@ -139,35 +156,58 @@ function makeList() {
         linkDivTag.appendChild(imgTag);
         linkDivTag.appendChild(aTag);
 
-        // 行div
+        // 削除ボタン ＋ (Favicon ＋ リンク div)
         var rowDivTag = document.createElement("div");
-        rowDivTag.id = item.id; // clearItem()にて使用する
         rowDivTag.className = "row";
         if (true) { // TODO オプション
             rowDivTag.appendChild(xTag);
         }
         rowDivTag.appendChild(linkDivTag);
 
-        document.getElementById("list").appendChild(rowDivTag);
+        // li
+        var liTag = document.createElement("li");
+        liTag.id = item.id; // clearItem()にて使用する
+        liTag.className = "ui-state-default";
+        liTag.appendChild(rowDivTag);
+        document.getElementById("sortable-list").appendChild(liTag);
     }
 
     // この関数内に書くことで上記で動的生成されたdivタグにjQueryイベントを設定できる
     $(function(){
-        // divクリックハンドラ
-        $("div.link").click(function(){
-            var url = $(this).find("a").attr("href");
-            window.open(url, "_blank");
-            return false;
+    	var mousedownX;
+    	var mousedownY;
+
+        // divマウスダウンハンドラ。マウス押下時の座標を記録しておく。
+    	$("div.link").mousedown(function(e){
+        	mousedownX = e.clientX;
+        	mousedownY = e.clientY;
+            return true;
         });
+
+        // divクリックハンドラ。マウス押下時と同じ座標のみクリックとみなしリンクへ飛ばす。
+        $("div.link").click(function(e){
+            if (mousedownX == e.clientX && mousedownY == e.clientY) {
+                var url = $(this).find("a").attr("href");
+                window.open(url, "_blank");
+                return false;
+            } else {
+            	return true; //D&Dによる並び替えはこっち
+            }
+        });
+
+        // D&Dによる並べ替え
+        $('#sortable-list').sortable();
+        $('#sortable-list').disableSelection();
+
         // 削除ボタンのホバーで行の色を切り替える
         $("a.x").hover(
             function(){
-                var rowDivTag = $(this).parent().get(0);
-                rowDivTag.style.background = "#ff3333";
+                var liTag = $(this).parent().get(0);
+                liTag.style.background = "#ff3333";
             },
             function(){
-                var rowDivTag = $(this).parent().get(0);
-                rowDivTag.style.background = "#ffffff";
+                var liTag = $(this).parent().get(0);
+                liTag.style.background = "#ffffff";
             }
         );
     });
@@ -178,7 +218,7 @@ function makeList() {
 
 <body onload="makeList()">
     <!-- リスト  -->
-    <div id="list"></div>
+    <ul id="sortable-list"></ul>
     <!-- クリアボタン  -->
     <!--
     <div id="buttonClear" class="clear" onclick="clearList()">CLEAR</div>
